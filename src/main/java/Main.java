@@ -85,6 +85,21 @@ public class Main {
             }catch (Exception e){
                 System.err.println("Błąd bazy: " + e);
             }
+        }else if (odpowiedz.equalsIgnoreCase("usun")){
+            try (Session session = HibernateUtil.INSTANCE.getSessionFactory().openSession()){
+                Transaction transaction = session.beginTransaction();
+                System.out.println("Podaj id pojazdu który chcesz usunać:");
+                String id = scanner.nextLine();
+                Long pojazdId = Long.parseLong(id);
+
+                Pojazd pojazd = session.get(Pojazd.class, pojazdId);
+                if (pojazd == null){
+                    System.err.println("Pojazd nie istnieje.");
+                } else {
+                    session.remove(pojazd);
+                }
+                transaction.commit();
+            }
         }
 
 
