@@ -1,6 +1,8 @@
+import jakarta.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -55,7 +57,36 @@ public class Main {
             }catch (Exception e){
                 System.err.println("Błąd bazy: " + e);
             }
+        } else if(odpowiedz.equalsIgnoreCase("lista")){
+            try (Session session = HibernateUtil.INSTANCE.getSessionFactory().openSession()){
+                TypedQuery<Pojazd> zapytanie = session.createQuery("FROM Pojazd", Pojazd.class);
+                List<Pojazd> listaWszystkichPojazdow = zapytanie.getResultList();
+                for (Pojazd pojazd : listaWszystkichPojazdow) {
+                    System.out.println(pojazd);
+                }
+            }catch (Exception e){
+                System.err.println("Błąd bazy: " + e);
+            }
+        } else if(odpowiedz.equalsIgnoreCase("szukaj")) {
+            try (Session session = HibernateUtil.INSTANCE.getSessionFactory().openSession()) {
+                TypedQuery<Pojazd> zapytanie = session.createQuery("FROM Pojazd", Pojazd.class);
+                List<Pojazd> listaWszystkichStudentow = zapytanie.getResultList();
+
+                System.out.println("podaj id pojazdu");
+                String odpowiedzId = scanner.nextLine();
+                long pojazdId = Long.parseLong(odpowiedzId);
+
+                Pojazd pojazd = session.get(Pojazd.class, pojazdId);
+                if (pojazd == null) {
+                    System.err.println("Nie znaleziono pojazdu");
+                } else {
+                    System.out.println("Pojazd: " + pojazd);
+                }
+            }catch (Exception e){
+                System.err.println("Błąd bazy: " + e);
+            }
         }
+
 
     }
 }
